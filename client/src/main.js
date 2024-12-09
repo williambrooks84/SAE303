@@ -29,7 +29,8 @@ V.render = function () {
   ];
 
   // Render the chart
-  PieView.render("header", chartData);
+  console.log("Chart container:", document.getElementById("chart"));
+  PieView.render("chart", chartData);
 };
 
 C.init();
