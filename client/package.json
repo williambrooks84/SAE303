@@ -10,13 +10,18 @@
   },
   "devDependencies": {
     "autoprefixer": "^10.4.20",
-    "postcss": "^8.4.47",
-    "tailwindcss": "^3.4.13",
+    "postcss": "^8.4.49",
+    "tailwindcss": "^3.4.16",
     "vite": "^5.4.8"
   },
   "dependencies": {
     "@amcharts/amcharts5": "^5.10.8",
     "@amcharts/amcharts5-fonts": "^5.0.1",
     "@amcharts/amcharts5-geodata": "^5.1.4"
-  }
+  },
+  "description": "��#\u0000 \u0000S\u0000A\u0000E\u00003\u00000\u00003\u0000\r\u0000 \u0000",
+  "main": "postcss.config.js",
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
 }
