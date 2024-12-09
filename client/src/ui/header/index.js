@@ -9,6 +9,4 @@ HeaderView.render = function(){
     return template;
 }
 
-
-
 export {HeaderView};
