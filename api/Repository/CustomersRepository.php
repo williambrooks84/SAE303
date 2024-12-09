@@ -37,7 +37,7 @@ class CustomersRepository extends EntityRepository {
         
         if ($answer==false) return null; // may be false if the sql request failed (wrong $id value for example)
         
-        $p = new Category($answer->id);
+        $p = new Customers($answer->id);
         $p->setFirstName($answer->firs_name);
         $p->setLastName($answer->last_name);
         $p->setEmail($answer->email);

@@ -30,7 +30,10 @@ require_once "Class/HttpRequest.php";
  *  On ajoutera des "routes" à $router si l'on a d'autres ressource à traiter.
  */
 $router = [
-    
+    "customers" => new CustomersController(),
+    "movies" => new MoviesController(),
+    "rentals" => new RentalsController(),
+    "sales" => new SalesController(),
 ];
 
 // objet HttpRequest qui contient toutes les infos utiles sur la requêtes (voir class/HttpRequest.php)

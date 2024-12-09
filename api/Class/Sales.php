@@ -75,7 +75,7 @@ class Sales implements JsonSerializable {
      *
      * @return  self
      */ 
-    public function setCustmerId($customer_id): self
+    public function setCustomerId($customer_id): self
     {
         $this->customer_id = $customer_id;
         return $this;
@@ -108,9 +108,12 @@ class Sales implements JsonSerializable {
      *
      * @return  self
      */
-
-    public function setPurchaseDate($purchase_date): self   {
-        $this->purchase_date = $purchase_date;
+    public function setPurchaseDate(string|DateTime $purchase_date): self {
+        if (is_string($purchase_date)) {
+            $this->purchase_date = new DateTime($purchase_date); // Convert string to DateTime
+        } else {
+            $this->purchase_date = $purchase_date;
+        }
         return $this;
     }
 

@@ -38,7 +38,7 @@ class MoviesRepository extends EntityRepository {
         if ($answer==false) return null; // may be false if the sql request failed (wrong $id value for example)
         
         $p = new Movies($answer->id);
-        $p->setMovieTitle($answer->title);
+        $p->setMovieTitle($answer->movie_title);
         $p->setGenre($answer->genre);
         $p->setReleaseDate($answer->release_date);
         $p->setDurationMinutes($answer->duration_minutes);
@@ -47,23 +47,21 @@ class MoviesRepository extends EntityRepository {
     }
 
     public function findAll(): array {
-        $requete = $this->cnx->prepare("select * from Movies");
+        $requete = $this->cnx->prepare("SELECT * FROM Movies");
         $requete->execute();
-        $answer = $requete->fetchAll(PDO::FETCH_OBJ);
-
+        $answer = $requete->fetchAll(PDO::FETCH_OBJ);  // Fetch all rows as an array of objects
+    
         $res = [];
-        foreach($answer as $obj){
-            $p = new Movies($obj->id);
-            $p->setFirstName($obj->firs_name);
-            $p->setLastName($obj->last_name);
-            $p->setEmail($obj->email);
-            $p->setCountry($obj->country);  
-            $p->setCity($obj->city);
-            $p->setLatitude($obj->lat);
-            $p->setLongitude($obj->lng);
-            array_push($res, $p);
+        foreach ($answer as $obj) {
+            $p = new Movies($obj->id);  // Access properties of each object
+            $p->setMovieTitle($obj->movie_title);
+            $p->setGenre($obj->genre);
+            $p->setReleaseDate($obj->release_date);
+            $p->setDurationMinutes($obj->duration_minutes);
+            $p->setRating($obj->rating);
+            array_push($res, $p);  // Add the movie object to the result array
         }
-       
+    
         return $res;
     }
 

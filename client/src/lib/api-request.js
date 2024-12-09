@@ -4,7 +4,7 @@
  */
 
 
-let API_URL = "TO BE DEFINED"; // URL de base de l'API (à définir)
+let API_URL = "https://mmi.unilim.fr/~brooks4/SAE303/api/"; // URL de base de l'API
 
 
 /**
@@ -61,6 +61,9 @@ let postRequest = async function(uri, data){
     // Défition des options de la requêtes
     let options = {
         method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
         body: data
     }
 

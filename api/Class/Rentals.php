@@ -75,7 +75,7 @@ class Rentals implements JsonSerializable {
      *
      * @return  self
      */ 
-    public function setCustmerId($customer_id): self
+    public function setCustomerId($customer_id): self
     {
         $this->customer_id = $customer_id;
         return $this;
@@ -109,8 +109,12 @@ class Rentals implements JsonSerializable {
      * @return  self
      */
 
-    public function setRentalDate($rental_date): self   {
-        $this->rental_date = $rental_date;
+     public function setRentalDate(string|DateTime $rental_date): self {
+        if (is_string($rental_date)) {
+            $this->rental_date = new DateTime($rental_date);
+        } else {
+            $this->rental_date = $rental_date;
+        }
         return $this;
     }
 

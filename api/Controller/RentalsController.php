@@ -11,7 +11,7 @@ class RentalsController extends Controller {
     private RentalsRepository $rental;
 
     public function __construct(){
-        $this->rental = new MoviesRepository();
+        $this->rental = new RentalsRepository();
     }
 
    

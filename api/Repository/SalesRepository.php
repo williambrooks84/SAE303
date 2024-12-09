@@ -52,7 +52,7 @@ class SalesRepository extends EntityRepository {
 
         $res = [];
         foreach($answer as $obj){
-            $p = new Rentals($obj->id);
+            $p = new Sales($obj->id);
             $p-> setCustomerId($obj->customer_id);
             $p-> setMovieId($obj->movie_id);
             $p-> setPurchaseDate($obj->purchase_date);
