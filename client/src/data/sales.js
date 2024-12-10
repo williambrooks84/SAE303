@@ -41,14 +41,14 @@ SaleData.update = async function (itemid) {
     return data === false ? [] : [data];
 };
 
-SalesData.fetch = async function (id) {
+SaleData.fetch = async function (id) {
     let data = await getRequest("saless/" + id);
     return data === false ? [] : [data];
 };
 
-SalesData.fetchAll = async function () {
+SaleData.fetchAll = async function () {
     let data = await getRequest("sales");
     return data;
 };
 
-export { SalesData };
+export { SaleData };
