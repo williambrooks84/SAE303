@@ -3,6 +3,7 @@ import { PieView } from "./ui/pie/index.js";
 import { SalesCounterView } from "./ui/salescounter/index.js";
 import { RentalsCounterView } from "./ui/rentalscounter/index.js";
 import { TopPurchasesView } from "./ui/toppurchases/index.js";
+import { TopRentalsView } from "./ui/toprentals/index.js";
 import { SaleData } from "./data/sales.js";
 import { RentalData } from "./data/rentals.js";
 import { MovieData } from "./data/movies.js";
@@ -20,7 +21,8 @@ let V = {
   //chart: document.querySelector("#chart"),
   salescounter: document.querySelector("#salescounter"),
   rentalscounter: document.querySelector("#rentalscounter"),
-  toppurchases: document.querySelector("#toppurchases")
+  toppurchases: document.querySelector("#toppurchases"),
+  toprentals: document.querySelector("#toprentals")
 };
 
 V.init = function () {
@@ -44,6 +46,7 @@ V.render = function () {
   updateSalesCounter();
   updateRentalsCounter();
   topMovies();
+  topMoviesRental();
 };
 
 C.init();
@@ -183,3 +186,79 @@ async function topMovies() {
   }
 }
 
+async function topMoviesRental() {
+  try {
+    const currentDate = new Date();
+    const lastMonthDate = new Date();
+    lastMonthDate.setMonth(currentDate.getMonth() - 1);
+  
+    const rentalsResponse = await RentalData.fetchAll(); 
+
+    if (!rentalsResponse || !Array.isArray(rentalsResponse) || rentalsResponse.length === 0) {
+      console.error('Error: Invalid or empty sales data.');
+      return;
+    }
+
+    const filteredRentals = rentalsResponse.filter(rental => {
+      const rentalDate = new Date(rental.rental_date.date);
+      return rentalDate >= lastMonthDate;
+    });
+
+    const totalRentals = filteredRentals.reduce((acc, rental) => {
+      return acc + rental.rental_price;
+    }, 0);
+
+    const salesMap = filteredRentals.reduce((acc, rental) => {
+      const movieId = rental.movie_id;
+      const price = rental.rental_price;
+
+      if (!acc[movieId]) {
+        acc[movieId] = 0;
+      }
+
+      acc[movieId] += price;
+      return acc;
+    }, {});
+
+    const sortedMovieIds = Object.entries(salesMap)
+      .sort((a, b) => b[1] - a[1]) 
+      .slice(0, 3) 
+      .map(entry => entry[0]);
+
+    const moviesResponse = await MovieData.fetchAll(); 
+
+    if (!moviesResponse || !Array.isArray(moviesResponse) || moviesResponse.length === 0) {
+      console.error('Error: Invalid or empty movie data.');
+      return;
+    }
+
+    const topMovies = sortedMovieIds.map(movieId => {
+      const movie = moviesResponse.find(m => m.id == movieId); 
+      return movie ? movie.movie_title : null; 
+    }).filter(title => title !== null); 
+
+    if (topMovies.length < 3) {
+      console.error('Not enough top movies found.');
+      return;
+    }
+
+    const toprentalsElement = document.querySelector('#toprentals');
+
+    if (!toprentalsElement) {
+      console.error('Error: Element .toppurchases not found in the DOM.');
+      return; 
+    }
+
+    let TopRentalsHTML = TopRentalsView.render(totalRentals.toFixed(2));
+
+    let finalHTML = TopRentalsHTML
+      .replace("{{movie1}}", topMovies[0])
+      .replace("{{movie2}}", topMovies[1])
+      .replace("{{movie3}}", topMovies[2]);
+
+    toprentalsElement.innerHTML = finalHTML;
+
+  } catch (error) {
+    console.error('Error fetching or processing data:', error);
+  }
+}
