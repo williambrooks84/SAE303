@@ -66,5 +66,10 @@ RentalData.fetchTotalRentalsByMonth = async function(){
     return data;
 }
 
+RentalData.fetchTotalRentalsByMonthAndGenre = async function(){
+    let data = await getRequest("rentals?stat=totalRentalsByMonthAndGenre");
+    return data;
+}
+
 
 export { RentalData };

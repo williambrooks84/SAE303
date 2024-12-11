@@ -84,6 +84,13 @@ class RentalsRepository extends EntityRepository {
         return $answer;
     }
 
+    public function totalRentalsByMonthAndGenre(){
+        $requete = $this->cnx->prepare("SELECT DATE_FORMAT(r.rental_date, '%Y-%m') AS month, m.genre, SUM(r.rental_price) AS total_rentals FROM Rentals r JOIN Movies m ON r.movie_id = m.id WHERE r.rental_date >= DATE_SUB(CURRENT_DATE, INTERVAL 6 MONTH) GROUP BY month, m.genre ORDER BY month DESC, m.genre;");
+        $requete->execute();
+        $answer = $requete->fetchAll(PDO::FETCH_OBJ);
+        return $answer;
+    }
+
     public function save($product){
         // Not implemented ! TODO when needed !          
         return false;

@@ -27,6 +27,9 @@ class RentalsController extends Controller {
         if ($stat=='totalRentalsByMonth'){
             return $this->rental->totalRentalsByMonth();
         }
+        if ($stat=='totalRentalsByMonthAndGenre'){
+            return $this->rental->totalRentalsByMonthAndGenre();
+        }
 
         $id = $request->getId("id");
         if ($id){

@@ -10,6 +10,7 @@ import { MovieData } from "./data/movies.js";
 import { SalesEvolutionView } from "./ui/salesevolutionchart/index.js";
 import { RentalsEvolutionView } from "./ui/rentalsevolutionchart/index.js";
 import { SalesEvolutionGenreView } from "./ui/salesevolutiongenrechart/index.js";
+import { RentalsEvolutionGenreView } from "./ui/rentalsevolutiongenrechart/index.js";
 
 import "./index.css";
 
@@ -55,6 +56,7 @@ V.render = function () {
   initializeSalesChart();
   initializeRentalsChart();
   initializeSalesGenreChart();
+  initializeRetalsGenreChart()
 };
 
 C.init();
@@ -124,4 +126,14 @@ async function fetchTotalSalesByMonthAndGenreData(){
 async function initializeSalesGenreChart(){
   const chartData = await fetchTotalSalesByMonthAndGenreData();
   SalesEvolutionGenreView.render("saleschartgenrediv", chartData);
+}
+
+async function fetchTotalRentalsByMonthAndGenreData(){
+  const rentalsData = await RentalData.fetchTotalRentalsByMonthAndGenre();
+  return rentalsData;
+}
+
+async function initializeRetalsGenreChart(){
+  const chartData = await fetchTotalRentalsByMonthAndGenreData();
+  RentalsEvolutionGenreView.render("rentalschartgenrediv", chartData);
 }
