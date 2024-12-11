@@ -104,7 +104,7 @@ let SalesEvolutionView = {
         valueYField: "value",
         valueXField: "date",
         tooltip: am5.Tooltip.new(root, {
-          labelText: "{valueY}", // Display sales value on tooltip
+          labelText: "{valueY}€", // Display sales value on tooltip
         }),
       })
     );
