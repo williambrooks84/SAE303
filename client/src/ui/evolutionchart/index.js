@@ -1,105 +1,127 @@
-import * as am5 from "@amcharts/amcharts5";
-import * as am5xy from "@amcharts/amcharts5/xy";
+import * as am5 from "@amcharts/amcharts5"; // Import necessary amCharts modules
+import * as am5xy from "@amcharts/amcharts5/xy"; 
 import am5themes_Animated from "@amcharts/amcharts5/themes/Animated";
 
-let EvolutionChartView = {
+// Function to aggregate sales by month over the past 6 months
+function aggregateMonthlySales(data) {
+  const monthlySales = {};
+  const currentDate = new Date();
+  const sixMonthsAgo = new Date();
+  sixMonthsAgo.setMonth(currentDate.getMonth() - 5); // 6 months ago
+
+  data.forEach(item => {
+    const purchaseDate = item.purchase_date ? new Date(item.purchase_date.date) : new Date(); // Parse purchase date
+    const monthYear = `${purchaseDate.getFullYear()}-${purchaseDate.getMonth() + 1}`; // Format: YYYY-MM
+
+    // Only include data from the past 6 months
+    if (purchaseDate >= sixMonthsAgo) {
+      if (monthlySales[monthYear]) {
+        monthlySales[monthYear] += item.purchase_price; // Sum sales for each month
+      } else {
+        monthlySales[monthYear] = item.purchase_price; // Initialize sales if not present
+      }
+    }
+  });
+
+  return Object.entries(monthlySales).map(([key, value]) => ({ // Format and return the aggregated data
+    date: new Date(key).getTime(), // Convert date to timestamp
+    value: value,                 // Sales value
+  }));
+}
+
+let SalesEvolutionView = {
   render: function (containerId, chartData) {
-    // Create root element
-    const root = am5.Root.new(containerId);
+    const root = am5.Root.new(containerId); // Create a new amCharts root
 
-    // Set themes
-    root.setThemes([am5themes_Animated.new(root)]);
+    const myTheme = am5.Theme.new(root); // Custom theme for styling
+    myTheme.rule("AxisLabel", ["minor"]).setAll({ dy: 1 }); // Customize minor axis labels
+    myTheme.rule("Grid", ["minor"]).setAll({ strokeOpacity: 0.08 }); // Customize minor grid opacity
 
-    // Create chart
-    const chart = root.container.children.push(
+    root.setThemes([am5themes_Animated.new(root), myTheme]); // Apply themes
+
+    const chart = root.container.children.push( // Create XYChart
       am5xy.XYChart.new(root, {
-        panX: true,
-        panY: true,
-        wheelX: "panX",
-        wheelY: "zoomX",
-        pinchZoomX: true,
+        panX: false,   // Disable panning on X-axis
+        panY: false,   // Disable panning on Y-axis
+        wheelX: "panX", // Enable zooming on X-axis via wheel
+        wheelY: "zoomX", // Enable zooming on X-axis via wheel
+        paddingLeft: 2, // Padding for layout
       })
     );
 
-    chart.get("colors").set("step", 3);
+    const cursor = chart.set(   // Add cursor for interaction
+      "cursor",
+      am5xy.XYCursor.new(root, {
+        behavior: "zoomX",   // Zoom on X-axis only
+      })
+    );
+    cursor.lineY.set("visible", false); // Hide vertical line from cursor
 
-    // Add cursor
-    const cursor = chart.set("cursor", am5xy.XYCursor.new(root, {}));
-    cursor.lineY.set("visible", false);
-
-    // Create axes
-    const xAxis = chart.xAxes.push(
+    const xAxis = chart.xAxes.push( // Configure Date Axis for months
       am5xy.DateAxis.new(root, {
-        maxDeviation: 0.3,
-        baseInterval: {
-          timeUnit: "day",
-          count: 1,
-        },
-        renderer: am5xy.AxisRendererX.new(root, { minorGridEnabled: true }),
-        tooltip: am5.Tooltip.new(root, {}),
+        maxDeviation: 0, // No deviation allowed
+        baseInterval: { timeUnit: "month", count: 1 }, // Monthly interval
+        renderer: am5xy.AxisRendererX.new(root, { 
+          minorGridEnabled: true, 
+          minGridDistance: 150, 
+          minorLabelsEnabled: true 
+        }),
+        tooltip: am5.Tooltip.new(root, {}), // Tooltip for X-axis
       })
     );
 
-    const yAxis = chart.yAxes.push(
+    xAxis.set("dateFormats", { month: "MM/yyyy" }); // Format: MM/YYYY for month-year display
+
+    const yAxis = chart.yAxes.push( // Configure Value Axis for sales
       am5xy.ValueAxis.new(root, {
-        maxDeviation: 0.3,
-        renderer: am5xy.AxisRendererY.new(root, {}),
+        renderer: am5xy.AxisRendererY.new(root, {}), // Basic renderer
       })
     );
 
-    // Add series
-    const series1 = chart.series.push(
+    // Line series for displaying sales data
+    const series = chart.series.push(
       am5xy.LineSeries.new(root, {
-        name: "Series 1",
+        name: "Sales",
         xAxis: xAxis,
         yAxis: yAxis,
-        valueYField: "value1",
+        valueYField: "value",
         valueXField: "date",
         tooltip: am5.Tooltip.new(root, {
-          labelText: "{valueX}: {valueY}\n{previousDate}: {value2}",
+          labelText: "{valueY}", // Display sales value on tooltip
         }),
       })
     );
 
-    series1.strokes.template.setAll({
-      strokeWidth: 2,
+    // Bullet for data points (circles)
+    series.bullets.push(function () {
+      var bulletCircle = am5.Circle.new(root, {
+        radius: 4,
+        fill: series.get("fill"), // Bullet color same as series
+      });
+      return am5.Bullet.new(root, {
+        sprite: bulletCircle,
+      });
     });
 
-    series1.get("tooltip").get("background").set("fillOpacity", 0.5);
-
-    const series2 = chart.series.push(
-      am5xy.LineSeries.new(root, {
-        name: "Series 2",
-        xAxis: xAxis,
-        yAxis: yAxis,
-        valueYField: "value2",
-        valueXField: "date",
+    chart.set(   // Add horizontal scrollbar
+      "scrollbarX",
+      am5.Scrollbar.new(root, {
+        orientation: "horizontal",
       })
     );
 
-    series2.strokes.template.setAll({
-      strokeDasharray: [2, 2],
-      strokeWidth: 2,
-    });
+    if (chartData && chartData.length > 0) {   // Check if there is data to display
+      chartData = aggregateMonthlySales(chartData);  // Aggregate data by month
+      chartData.sort((a, b) => a.date - b.date); // Sort data by date
+      series.data.setAll(chartData);   // Set the aggregated data
+      series.appear(1000);   // Animate series appearance
+      chart.appear(1000, 100);   // Animate chart appearance
+    } else {
+      console.warn("No sales data available to render the chart.");   // Warn if no data
+    }
 
-    // Set date fields
-    root.dateFormatter.setAll({
-      dateFormat: "yyyy-MM-dd",
-      dateFields: ["valueX"],
-    });
-
-    // Set data for the series
-    series1.data.setAll(chartData);
-    series2.data.setAll(chartData);
-
-    // Make animations on load
-    series1.appear(1000);
-    series2.appear(1000);
-    chart.appear(1000, 100);
-
-    // Return root for potential further interaction
-    return root;
+    return root;   // Return the amCharts root instance
   },
 };
 
-export { EvolutionChartView };
+export { SalesEvolutionView };

@@ -7,7 +7,7 @@ import { TopRentalsView } from "./ui/toprentals/index.js";
 import { SaleData } from "./data/sales.js";
 import { RentalData } from "./data/rentals.js";
 import { MovieData } from "./data/movies.js";
-import { EvolutionChartView } from "./ui/evolutionchart/index.js";
+import { SalesEvolutionView } from "./ui/evolutionchart/index.js";
 
 import "./index.css";
 
@@ -48,19 +48,7 @@ V.render = function () {
   updateRentalsCounter();
   topMovies();
   topMoviesRental();
-
-  const chartData = [
-    { date: new Date(2019, 5, 12).getTime(), value1: 50, value2: 48, previousDate: "2019-05-05" },
-    { date: new Date(2019, 5, 13).getTime(), value1: 53, value2: 51, previousDate: "2019-05-06" },
-    { date: new Date(2019, 5, 14).getTime(), value1: 56, value2: 58, previousDate: "2019-05-07" },
-    { date: new Date(2019, 5, 15).getTime(), value1: 52, value2: 53, previousDate: "2019-05-08" },
-    { date: new Date(2019, 5, 16).getTime(), value1: 48, value2: 44, previousDate: "2019-05-09" },
-    { date: new Date(2019, 5, 17).getTime(), value1: 47, value2: 42, previousDate: "2019-05-10" },
-    { date: new Date(2019, 5, 18).getTime(), value1: 59, value2: 55, previousDate: "2019-05-11" },
-  ];
-  
-  // Render the Evolution Chart in a container with ID 'chartdiv'
-  EvolutionChartView.render("chartdiv", chartData);
+  initializeChart();
 };
 
 C.init();
@@ -275,4 +263,14 @@ async function topMoviesRental() {
   } catch (error) {
     console.error('Error fetching or processing data:', error);
   }
+}
+
+async function fetchSalesData() {
+    const salesData = await SaleData.fetchAll();
+    return salesData;
+}
+
+async function initializeChart() {
+    const chartData = await fetchSalesData();
+    SalesEvolutionView.render("chartdiv", chartData); 
 }
