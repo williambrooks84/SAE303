@@ -7,7 +7,7 @@ import { TopRentalsView } from "./ui/toprentals/index.js";
 import { SaleData } from "./data/sales.js";
 import { RentalData } from "./data/rentals.js";
 import { MovieData } from "./data/movies.js";
-import { SalesEvolutionView } from "./ui/evolutionchart/index.js";
+import { SalesEvolutionView } from "./ui/salesevolutionchart/index.js";
 
 import "./index.css";
 
@@ -272,5 +272,5 @@ async function fetchSalesData() {
 
 async function initializeChart() {
     const chartData = await fetchSalesData();
-    SalesEvolutionView.render("chartdiv", chartData); 
+    SalesEvolutionView.render("saleschartdiv", chartData); 
 }
