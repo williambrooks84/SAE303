@@ -8,6 +8,7 @@ import { SaleData } from "./data/sales.js";
 import { RentalData } from "./data/rentals.js";
 import { MovieData } from "./data/movies.js";
 import { SalesEvolutionView } from "./ui/salesevolutionchart/index.js";
+import { RentalsEvolutionView } from "./ui/rentalsevolutionchart/index.js";
 
 import "./index.css";
 
@@ -48,7 +49,8 @@ V.render = function () {
   updateRentalsCounter();
   topMovies();
   topMoviesRental();
-  initializeChart();
+  initializeSalesChart();
+  initializeRentalsChart();
 };
 
 C.init();
@@ -270,7 +272,18 @@ async function fetchSalesData() {
     return salesData;
 }
 
-async function initializeChart() {
+async function fetchRentalsData() {
+  const rentalsData = await RentalData.fetchAll();
+  return rentalsData;
+}
+
+
+async function initializeSalesChart() {
     const chartData = await fetchSalesData();
     SalesEvolutionView.render("saleschartdiv", chartData); 
+}
+
+async function initializeRentalsChart() {
+  const chartData = await fetchRentalsData();
+  RentalsEvolutionView.render("rentalschartdiv", chartData); 
 }

@@ -3,38 +3,38 @@ import * as am5xy from "@amcharts/amcharts5/xy";
 import am5themes_Animated from "@amcharts/amcharts5/themes/Animated";
 
 // Function to aggregate sales by month over the past 6 months
-function aggregateMonthlySales(data) {
-  const monthlySales = {};
+function aggregateMonthlyRentals(data) {
+  const monthlyRentals = {};
   const currentDate = new Date();
   const sixMonthsAgo = new Date();
   sixMonthsAgo.setMonth(currentDate.getMonth() - 5); // 6 months ago
 
   data.forEach((item) => {
-    const purchaseDate = item.purchase_date
-      ? new Date(item.purchase_date.date)
-      : new Date(); // Parse purchase date
-    const monthYear = `${purchaseDate.getFullYear()}-${
-      purchaseDate.getMonth() + 1
+    const rentalDate = item.rental_date
+      ? new Date(item.rental_date.date)
+      : new Date(); // Parse rental date
+    const monthYear = `${rentalDate.getFullYear()}-${
+      rentalDate.getMonth() + 1
     }`; // Format: YYYY-MM
 
     // Only include data from the past 6 months
-    if (purchaseDate >= sixMonthsAgo) {
-      if (monthlySales[monthYear]) {
-        monthlySales[monthYear] += item.purchase_price; // Sum sales for each month
+    if (rentalDate >= sixMonthsAgo) {
+      if (monthlyRentals[monthYear]) {
+        monthlyRentals[monthYear] += item.rental_price; // Sum rentals for each month
       } else {
-        monthlySales[monthYear] = item.purchase_price; // Initialize sales if not present
+        monthlyRentals[monthYear] = item.rental_price; // Initialize sales if not present
       }
     }
   });
 
-  return Object.entries(monthlySales).map(([key, value]) => ({
+  return Object.entries(monthlyRentals).map(([key, value]) => ({
     // Format and return the aggregated data
     date: new Date(key).getTime(), // Convert date to timestamp
     value: value, // Sales value
   }));
 }
 
-let SalesEvolutionView = {
+let RentalsEvolutionView = {
   render: function (containerId, chartData) {
     const root = am5.Root.new(containerId); // Create a new amCharts root
 
@@ -130,18 +130,18 @@ let SalesEvolutionView = {
 
     if (chartData && chartData.length > 0) {
       // Check if there is data to display
-      chartData = aggregateMonthlySales(chartData); // Aggregate data by month
+      chartData = aggregateMonthlyRentals(chartData); // Aggregate data by month
       chartData.sort((a, b) => a.date - b.date); // Sort data by date
       series.data.setAll(chartData); // Set the aggregated data
       series.appear(1000); // Animate series appearance
       chart.appear(1000, 100); // Animate chart appearance
     } else {
-      console.warn("No sales data available to render the chart."); // Warn if no data
+      console.warn("No rentals data available to render the chart."); // Warn if no data
     }
 
     const label = root.container.children.push(
       am5.Label.new(root, {
-      text: "Evolution des ventes sur les 6 derniers mois (en €)", // Set the desired static label text
+      text: "Evolution des locations sur les 6 derniers mois (en €)", // Set the desired static label text
       x: 0,
       y: -10,
       fontSize: 16,
@@ -154,4 +154,4 @@ let SalesEvolutionView = {
   },
 };
 
-export { SalesEvolutionView };
+export { RentalsEvolutionView };
