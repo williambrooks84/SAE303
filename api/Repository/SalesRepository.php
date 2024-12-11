@@ -69,6 +69,13 @@ class SalesRepository extends EntityRepository {
         $answer = $requete->fetchAll(PDO::FETCH_OBJ);
         return $answer;
     }
+
+    public function topSalesThisMonth(){
+        $requete = $this->cnx->prepare("SELECT m.movie_title FROM ( SELECT s.movie_id, SUM(s.purchase_price) AS total_sales FROM Sales s WHERE s.purchase_date >= DATE_SUB(CURRENT_DATE, INTERVAL 1 MONTH) GROUP BY s.movie_id ORDER BY total_sales DESC LIMIT 3 ) AS sub_query JOIN Movies m ON sub_query.movie_id = m.id;");
+        $requete->execute();
+        $answer = $requete->fetchAll(PDO::FETCH_OBJ);
+        return $answer;
+    }
     
     public function save($product){
         // Not implemented ! TODO when needed !          

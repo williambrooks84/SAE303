@@ -16,6 +16,7 @@ class MoviesController extends Controller {
 
    
     protected function processGetRequest(HttpRequest $request) {
+
         $id = $request->getId("id");
         if ($id){
             // URI is .../category/{id}

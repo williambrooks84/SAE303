@@ -21,6 +21,9 @@ class RentalsController extends Controller {
         if ($stat=='rentalsThisMonth'){
             return $this->rental->rentalsThisMonth();
         }
+        if ($stat=='topRentalsThisMonth'){
+            return $this->rental->topRentalsThisMonth();
+        }
 
         $id = $request->getId("id");
         if ($id){

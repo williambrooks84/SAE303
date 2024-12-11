@@ -56,4 +56,9 @@ SaleData.fetchCurrentMonth = async function(){
     return data;
 }
 
+SaleData.fetchTopSalesCurrentMonth = async function(){
+    let data = await getRequest("sales?stat=topSalesThisMonth");
+    return data;
+}
+
 export { SaleData };
