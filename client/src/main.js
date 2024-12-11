@@ -54,7 +54,7 @@ V.render = function () {
   topMoviesRental();
   initializeSalesChart();
   initializeRentalsChart();
-  //initializeSalesGenreChart();
+  initializeSalesGenreChart();
 };
 
 C.init();
@@ -113,10 +113,15 @@ async function initializeRentalsChart() {
   RentalsEvolutionView.render("rentalschartdiv", chartData);
 }
 
+
 //Itération 6
-/*
-async function initializeSalesGenreChart() {
-  const chartData = await fetchSalesData();
-  const moviesData = await fetchMoviesData();
-  SalesEvolutionGenreView.render("saleschartgenrediv", chartData, moviesData);
-}*/
+
+async function fetchTotalSalesByMonthAndGenreData(){
+  const salesData = await SaleData.fetchTotalSalesByMonthAndGenre();
+  return salesData;
+}
+
+async function initializeSalesGenreChart(){
+  const chartData = await fetchTotalSalesByMonthAndGenreData();
+  SalesEvolutionGenreView.render("saleschartgenrediv", chartData);
+}

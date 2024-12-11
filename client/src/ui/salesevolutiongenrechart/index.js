@@ -3,45 +3,18 @@ import * as am5xy from "@amcharts/amcharts5/xy";
 import am5themes_Animated from "@amcharts/amcharts5/themes/Animated";
 
 // Function to aggregate sales by month and genre over the past 6 months
-function aggregateMonthlySalesByGenre(sales, movies) {
-  const monthlySalesByGenre = {};
-  const currentDate = new Date();
-  const sixMonthsAgo = new Date();
-  sixMonthsAgo.setMonth(currentDate.getMonth() - 5); // 6 months ago
-
-  sales.forEach((sale) => {
-    const purchaseDate = new Date(sale.purchase_date.date);
-    const monthYear = `${purchaseDate.getFullYear()}-${purchaseDate.getMonth() + 1}`; // Format: YYYY-MM
-
-    if (purchaseDate >= sixMonthsAgo) {
-      const movie = movies.find((m) => m.id === sale.movie_id);
-
-      if (!movie) {
-        console.warn(`Movie with ID ${sale.movie_id} not found in movies dataset.`);
-        return; // Skip this sale if the movie is not found
-      }
-
-      const genre = movie.genre;
-
-      if (!monthlySalesByGenre[monthYear]) {
-        monthlySalesByGenre[monthYear] = {};
-      }
-
-      if (!monthlySalesByGenre[monthYear][genre]) {
-        monthlySalesByGenre[monthYear][genre] = 0; // Ensure 0€ if no sales exist
-      }
-
-      monthlySalesByGenre[monthYear][genre] += sale.purchase_price;
-    }
-  });
-
+function aggregateMonthlySalesByGenre(salesData) {
   const result = [];
-  Object.entries(monthlySalesByGenre).forEach(([monthYear, genres]) => {
-    Object.entries(genres).forEach(([genre, value]) => {
+  const genres = [...new Set(salesData.map((sale) => sale.genre))];
+  const months = [...new Set(salesData.map((sale) => sale.month))];
+
+  months.forEach((month) => {
+    genres.forEach((genre) => {
+      const sale = salesData.find((sale) => sale.month === month && sale.genre === genre);
       result.push({
-        date: new Date(`${monthYear}-01`).getTime(), // Convert month to timestamp
+        date: new Date(`${month}-01`).getTime(), // Convert month to timestamp
         genre: genre,
-        value: value,
+        value: sale ? parseFloat(sale.total_sales) : 0, // Set value to 0 if no sales
       });
     });
   });
