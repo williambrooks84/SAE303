@@ -51,4 +51,9 @@ SaleData.fetchAll = async function () {
     return data;
 };
 
+SaleData.fetchCurrentMonth = async function(){
+    let data = await getRequest("sales?stat=salesThisMonth");
+    return data;
+}
+
 export { SaleData };

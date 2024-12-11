@@ -16,6 +16,12 @@ class SalesController extends Controller {
 
    
     protected function processGetRequest(HttpRequest $request) {
+
+        $stat = $request->getParam("stat");
+        if ($stat=='salesThisMonth'){
+            return $this->sale->salesThisMonth();
+        }
+
         $id = $request->getId("id");
         if ($id){
             // URI is .../category/{id}

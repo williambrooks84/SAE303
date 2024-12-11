@@ -63,6 +63,13 @@ class SalesRepository extends EntityRepository {
         return $res;
     }
 
+    public function salesThisMonth(){
+        $requete = $this->cnx->prepare("SELECT sum(purchase_price) from Sales where MONTH(purchase_date)=MONTH(CURRENT_DATE()) && YEAR(purchase_date)=YEAR(CURRENT_DATE())");
+        $requete->execute();
+        $answer = $requete->fetchAll(PDO::FETCH_OBJ);
+        return $answer;
+    }
+    
     public function save($product){
         // Not implemented ! TODO when needed !          
         return false;

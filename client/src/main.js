@@ -25,7 +25,7 @@ let V = {
   salescounter: document.querySelector("#salescounter"),
   rentalscounter: document.querySelector("#rentalscounter"),
   toppurchases: document.querySelector("#toppurchases"),
-  toprentals: document.querySelector("#toprentals")
+  toprentals: document.querySelector("#toprentals"),
 };
 
 V.init = function () {
@@ -54,7 +54,7 @@ V.render = function () {
   topMoviesRental();
   initializeSalesChart();
   initializeRentalsChart();
-  initializeSalesGenreChart()
+  initializeSalesGenreChart();
 };
 
 C.init();
@@ -62,61 +62,17 @@ C.init();
 //Itération 3
 
 async function updateSalesCounter() {
-  try {
-    const salesData = await SaleData.fetchAll();
-    
-    const currentDate = new Date();
-    const oneMonthAgo = new Date();
-    oneMonthAgo.setMonth(currentDate.getMonth() - 1); 
-
-
-    const recentSales = salesData.filter(sale => {
-
-      const saleDate = new Date(sale.purchase_date.date); 
-
-      return saleDate >= oneMonthAgo && saleDate <= currentDate;
-    });
-
-    const totalSales = recentSales.reduce((total, sale) => {
-      return total + parseFloat(sale.purchase_price);
-    }, 0);
-
-    const salesCounterHTML = SalesCounterView.render(totalSales.toFixed(2));
-    V.salescounter.innerHTML = salesCounterHTML.replace("{{sales}}", totalSales.toFixed(2));
-
-  } catch (error) {
-    console.error('Error fetching sales data:', error);
-    V.salescounter.innerHTML = "Failed to load sales data"; 
-  }
+  let salesData = await SaleData.fetchCurrentMonth();
+  const totalSales = salesData[0]["sum(purchase_price)"];
+  const salesCounterHTML = SalesCounterView.render();
+  V.salescounter.innerHTML = salesCounterHTML.replace("{{sales}}",totalSales);
 }
 
 async function updateRentalsCounter() {
-  try {
-    const rentalsData = await RentalData.fetchAll();
-    
-    const currentDate = new Date();
-    const oneMonthAgo = new Date();
-    oneMonthAgo.setMonth(currentDate.getMonth() - 1); 
-
-
-    const recentRentals = rentalsData.filter(rental => {
-
-      const rentalDate = new Date(rental.rental_date.date); 
-
-      return rentalDate >= oneMonthAgo && rentalDate <= currentDate;
-    });
-
-    const totalRentals = recentRentals.reduce((total, rental) => {
-      return total + parseFloat(rental.rental_price);
-    }, 0);
-
-    const rentalsCounterHTML = RentalsCounterView.render(totalRentals.toFixed(2));
-    V.rentalscounter.innerHTML = rentalsCounterHTML.replace("{{rentals}}", totalRentals.toFixed(2));
-
-  } catch (error) {
-    console.error('Error fetching sales data:', error);
-    V.rentalscounter.innerHTML = "Failed to load sales data"; 
-  }
+  let rentalsData = await RentalData.fetchCurrentMonth();
+  const totalRentals = rentalsData[0]["sum(rental_price)"];
+  const rentalsCounterHTML = RentalsCounterView.render();
+  V.rentalscounter.innerHTML = rentalsCounterHTML.replace("{{rentals}}",totalRentals);
 }
 
 //Itération 4
@@ -126,15 +82,19 @@ async function topMovies() {
     const currentDate = new Date();
     const lastMonthDate = new Date();
     lastMonthDate.setMonth(currentDate.getMonth() - 1);
-  
-    const salesResponse = await SaleData.fetchAll(); 
 
-    if (!salesResponse || !Array.isArray(salesResponse) || salesResponse.length === 0) {
-      console.error('Error: Invalid or empty sales data.');
+    const salesResponse = await SaleData.fetchAll();
+
+    if (
+      !salesResponse ||
+      !Array.isArray(salesResponse) ||
+      salesResponse.length === 0
+    ) {
+      console.error("Error: Invalid or empty sales data.");
       return;
     }
 
-    const filteredSales = salesResponse.filter(sale => {
+    const filteredSales = salesResponse.filter((sale) => {
       const purchaseDate = new Date(sale.purchase_date.date);
       return purchaseDate >= lastMonthDate;
     });
@@ -156,45 +116,49 @@ async function topMovies() {
     }, {});
 
     const sortedMovieIds = Object.entries(salesMap)
-      .sort((a, b) => b[1] - a[1]) 
-      .slice(0, 3) 
-      .map(entry => entry[0]);
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 3)
+      .map((entry) => entry[0]);
 
-    const moviesResponse = await MovieData.fetchAll(); 
+    const moviesResponse = await MovieData.fetchAll();
 
-    if (!moviesResponse || !Array.isArray(moviesResponse) || moviesResponse.length === 0) {
-      console.error('Error: Invalid or empty movie data.');
+    if (
+      !moviesResponse ||
+      !Array.isArray(moviesResponse) ||
+      moviesResponse.length === 0
+    ) {
+      console.error("Error: Invalid or empty movie data.");
       return;
     }
 
-    const topMovies = sortedMovieIds.map(movieId => {
-      const movie = moviesResponse.find(m => m.id == movieId); 
-      return movie ? movie.movie_title : null; 
-    }).filter(title => title !== null); 
+    const topMovies = sortedMovieIds
+      .map((movieId) => {
+        const movie = moviesResponse.find((m) => m.id == movieId);
+        return movie ? movie.movie_title : null;
+      })
+      .filter((title) => title !== null);
 
     if (topMovies.length < 3) {
-      console.error('Not enough top movies found.');
+      console.error("Not enough top movies found.");
       return;
     }
 
-    const toppurchasesElement = document.querySelector('#toppurchases');
+    const toppurchasesElement = document.querySelector("#toppurchases");
 
     if (!toppurchasesElement) {
-      console.error('Error: Element .toppurchases not found in the DOM.');
-      return; 
+      console.error("Error: Element .toppurchases not found in the DOM.");
+      return;
     }
 
     let TopSalesHTML = TopPurchasesView.render(totalSales.toFixed(2));
 
-    let finalHTML = TopSalesHTML
-      .replace("{{movie1}}", topMovies[0])
+    let finalHTML = TopSalesHTML.replace("{{movie1}}", topMovies[0])
       .replace("{{movie2}}", topMovies[1])
       .replace("{{movie3}}", topMovies[2]);
 
     toppurchasesElement.innerHTML = finalHTML;
-
   } catch (error) {
-    console.error('Error fetching or processing data:', error);
+    console.error("Error fetching or processing data:", error);
   }
 }
 
@@ -203,15 +167,19 @@ async function topMoviesRental() {
     const currentDate = new Date();
     const lastMonthDate = new Date();
     lastMonthDate.setMonth(currentDate.getMonth() - 1);
-  
-    const rentalsResponse = await RentalData.fetchAll(); 
 
-    if (!rentalsResponse || !Array.isArray(rentalsResponse) || rentalsResponse.length === 0) {
-      console.error('Error: Invalid or empty sales data.');
+    const rentalsResponse = await RentalData.fetchAll();
+
+    if (
+      !rentalsResponse ||
+      !Array.isArray(rentalsResponse) ||
+      rentalsResponse.length === 0
+    ) {
+      console.error("Error: Invalid or empty sales data.");
       return;
     }
 
-    const filteredRentals = rentalsResponse.filter(rental => {
+    const filteredRentals = rentalsResponse.filter((rental) => {
       const rentalDate = new Date(rental.rental_date.date);
       return rentalDate >= lastMonthDate;
     });
@@ -233,53 +201,57 @@ async function topMoviesRental() {
     }, {});
 
     const sortedMovieIds = Object.entries(salesMap)
-      .sort((a, b) => b[1] - a[1]) 
-      .slice(0, 3) 
-      .map(entry => entry[0]);
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 3)
+      .map((entry) => entry[0]);
 
-    const moviesResponse = await MovieData.fetchAll(); 
+    const moviesResponse = await MovieData.fetchAll();
 
-    if (!moviesResponse || !Array.isArray(moviesResponse) || moviesResponse.length === 0) {
-      console.error('Error: Invalid or empty movie data.');
+    if (
+      !moviesResponse ||
+      !Array.isArray(moviesResponse) ||
+      moviesResponse.length === 0
+    ) {
+      console.error("Error: Invalid or empty movie data.");
       return;
     }
 
-    const topMovies = sortedMovieIds.map(movieId => {
-      const movie = moviesResponse.find(m => m.id == movieId); 
-      return movie ? movie.movie_title : null; 
-    }).filter(title => title !== null); 
+    const topMovies = sortedMovieIds
+      .map((movieId) => {
+        const movie = moviesResponse.find((m) => m.id == movieId);
+        return movie ? movie.movie_title : null;
+      })
+      .filter((title) => title !== null);
 
     if (topMovies.length < 3) {
-      console.error('Not enough top movies found.');
+      console.error("Not enough top movies found.");
       return;
     }
 
-    const toprentalsElement = document.querySelector('#toprentals');
+    const toprentalsElement = document.querySelector("#toprentals");
 
     if (!toprentalsElement) {
-      console.error('Error: Element .toppurchases not found in the DOM.');
-      return; 
+      console.error("Error: Element .toppurchases not found in the DOM.");
+      return;
     }
 
     let TopRentalsHTML = TopRentalsView.render(totalRentals.toFixed(2));
 
-    let finalHTML = TopRentalsHTML
-      .replace("{{movie1}}", topMovies[0])
+    let finalHTML = TopRentalsHTML.replace("{{movie1}}", topMovies[0])
       .replace("{{movie2}}", topMovies[1])
       .replace("{{movie3}}", topMovies[2]);
 
     toprentalsElement.innerHTML = finalHTML;
-
   } catch (error) {
-    console.error('Error fetching or processing data:', error);
+    console.error("Error fetching or processing data:", error);
   }
 }
 
 //Itération 5
 
 async function fetchSalesData() {
-    const salesData = await SaleData.fetchAll();
-    return salesData;
+  const salesData = await SaleData.fetchAll();
+  return salesData;
 }
 
 async function fetchRentalsData() {
@@ -293,19 +265,18 @@ async function fetchMoviesData() {
 }
 
 async function initializeSalesChart() {
-    const chartData = await fetchSalesData();
-    SalesEvolutionView.render("saleschartdiv", chartData); 
+  const chartData = await fetchSalesData();
+  SalesEvolutionView.render("saleschartdiv", chartData);
 }
 
 async function initializeRentalsChart() {
   const chartData = await fetchRentalsData();
-  RentalsEvolutionView.render("rentalschartdiv", chartData); 
+  RentalsEvolutionView.render("rentalschartdiv", chartData);
 }
-
 
 //Itération 6
 async function initializeSalesGenreChart() {
   const chartData = await fetchSalesData();
   const moviesData = await fetchMoviesData();
-  SalesEvolutionGenreView.render("saleschartgenrediv", chartData, moviesData); 
+  SalesEvolutionGenreView.render("saleschartgenrediv", chartData, moviesData);
 }

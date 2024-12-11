@@ -63,6 +63,13 @@ class RentalsRepository extends EntityRepository {
         return $res;
     }
 
+    public function rentalsThisMonth(){
+        $requete = $this->cnx->prepare("SELECT sum(rental_price) from Rentals where MONTH(rental_date)=MONTH(CURRENT_DATE()) && YEAR(rental_date)=YEAR(CURRENT_DATE())");
+        $requete->execute();
+        $answer = $requete->fetchAll(PDO::FETCH_OBJ);
+        return $answer;
+    }
+
     public function save($product){
         // Not implemented ! TODO when needed !          
         return false;

@@ -16,6 +16,12 @@ class RentalsController extends Controller {
 
    
     protected function processGetRequest(HttpRequest $request) {
+
+        $stat = $request->getParam("stat");
+        if ($stat=='rentalsThisMonth'){
+            return $this->rental->rentalsThisMonth();
+        }
+
         $id = $request->getId("id");
         if ($id){
             // URI is .../category/{id}

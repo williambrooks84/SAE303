@@ -51,4 +51,9 @@ RentalData.fetchAll = async function () {
     return data;
 };
 
+RentalData.fetchCurrentMonth = async function(){
+    let data = await getRequest("rentals?stat=rentalsThisMonth");
+    return data;
+}
+
 export { RentalData };
