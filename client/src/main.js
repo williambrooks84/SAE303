@@ -11,6 +11,8 @@ import { SalesEvolutionView } from "./ui/salesevolutionchart/index.js";
 import { RentalsEvolutionView } from "./ui/rentalsevolutionchart/index.js";
 import { SalesEvolutionGenreView } from "./ui/salesevolutiongenrechart/index.js";
 import { RentalsEvolutionGenreView } from "./ui/rentalsevolutiongenrechart/index.js";
+import { SalesByCountryView } from "./ui/salesbycountry/index.js";
+import { RentalsByCountryView } from "./ui/rentalsbycountry/index.js";
 
 import "./index.css";
 
@@ -56,7 +58,9 @@ V.render = function () {
   initializeSalesChart();
   initializeRentalsChart();
   initializeSalesGenreChart();
-  initializeRetalsGenreChart()
+  initializeRetalsGenreChart();
+  initializeSalesByCountry();
+  initializeRentalsByCountry()
 };
 
 C.init();
@@ -136,4 +140,26 @@ async function fetchTotalRentalsByMonthAndGenreData(){
 async function initializeRetalsGenreChart(){
   const chartData = await fetchTotalRentalsByMonthAndGenreData();
   RentalsEvolutionGenreView.render("rentalschartgenrediv", chartData);
+}
+
+//Itération 7
+
+async function fetchSalesByCountryData(){
+  const salesData = await SaleData.fetchSalesByCountry();
+  return salesData;
+}
+
+async function initializeSalesByCountry(){
+  const chartData = await fetchSalesByCountryData();
+  SalesByCountryView.render("salesbycountrydiv", chartData);
+}
+
+async function fetchRentalsByCountryData(){
+  const rentalsData = await RentalData.fetchRentalsByCountry();
+  return rentalsData;
+}
+
+async function initializeRentalsByCountry(){
+  const chartData = await fetchRentalsByCountryData();
+  RentalsByCountryView.render("rentalsbycountrydiv", chartData);
 }

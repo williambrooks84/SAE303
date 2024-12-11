@@ -30,6 +30,9 @@ class RentalsController extends Controller {
         if ($stat=='totalRentalsByMonthAndGenre'){
             return $this->rental->totalRentalsByMonthAndGenre();
         }
+        if ($stat=='rentalsByCountry'){
+            return $this->rental->rentalsByCountry();
+        }
 
         $id = $request->getId("id");
         if ($id){

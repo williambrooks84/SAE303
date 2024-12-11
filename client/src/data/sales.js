@@ -71,4 +71,9 @@ SaleData.fetchTotalSalesByMonthAndGenre = async function(){
     return data;
 }
 
+SaleData.fetchSalesByCountry = async function(){
+    let data = await getRequest("sales?stat=salesByCountry");
+    return data;
+}
+
 export { SaleData };

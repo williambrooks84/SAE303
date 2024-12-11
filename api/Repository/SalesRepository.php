@@ -90,6 +90,13 @@ class SalesRepository extends EntityRepository {
         $answer = $requete->fetchAll(PDO::FETCH_OBJ);
         return $answer;
     }
+
+    public function salesByCountry(){
+        $requete = $this->cnx->prepare("SELECT c.country, SUM(s.purchase_price) AS total_sales FROM Sales s JOIN Customers c ON s.customer_id = c.id GROUP BY c.country ORDER BY total_sales DESC;");
+        $requete->execute();
+        $answer = $requete->fetchAll(PDO::FETCH_OBJ);
+        return $answer;
+    }
     
     public function save($product){
         // Not implemented ! TODO when needed !          

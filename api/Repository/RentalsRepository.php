@@ -91,6 +91,13 @@ class RentalsRepository extends EntityRepository {
         return $answer;
     }
 
+    public function rentalsByCountry(){
+        $requete = $this->cnx->prepare("SELECT c.country, SUM(r.rental_price) AS total_rentals FROM Rentals r JOIN Customers c ON r.customer_id = c.id GROUP BY c.country ORDER BY total_rentals DESC;");
+        $requete->execute();
+        $answer = $requete->fetchAll(PDO::FETCH_OBJ);
+        return $answer;
+    }
+
     public function save($product){
         // Not implemented ! TODO when needed !          
         return false;

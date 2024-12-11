@@ -30,6 +30,9 @@ class SalesController extends Controller {
         if ($stat=='totalSalesByMonthAndGenre'){
             return $this->sale->totalSalesByMonthAndGenre();
         }
+        if ($stat=='salesByCountry'){
+            return $this->sale->salesByCountry();
+        }
 
         $id = $request->getId("id");
         if ($id){
