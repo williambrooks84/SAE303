@@ -4,33 +4,9 @@ import am5themes_Animated from "@amcharts/amcharts5/themes/Animated";
 
 // Function to aggregate sales by month over the past 6 months
 function aggregateMonthlySales(data) {
-  const monthlySales = {};
-  const currentDate = new Date();
-  const sixMonthsAgo = new Date();
-  sixMonthsAgo.setMonth(currentDate.getMonth() - 5); // 6 months ago
-
-  data.forEach((item) => {
-    const purchaseDate = item.purchase_date
-      ? new Date(item.purchase_date.date)
-      : new Date(); // Parse purchase date
-    const monthYear = `${purchaseDate.getFullYear()}-${
-      purchaseDate.getMonth() + 1
-    }`; // Format: YYYY-MM
-
-    // Only include data from the past 6 months
-    if (purchaseDate >= sixMonthsAgo) {
-      if (monthlySales[monthYear]) {
-        monthlySales[monthYear] += item.purchase_price; // Sum sales for each month
-      } else {
-        monthlySales[monthYear] = item.purchase_price; // Initialize sales if not present
-      }
-    }
-  });
-
-  return Object.entries(monthlySales).map(([key, value]) => ({
-    // Format and return the aggregated data
-    date: new Date(key).getTime(), // Convert date to timestamp
-    value: value, // Sales value
+  return data.map((item) => ({
+    date: new Date(item.month).getTime(), // Convert month to timestamp
+    value: parseFloat(item.total_sales), // Convert total_sales to float
   }));
 }
 

@@ -24,6 +24,9 @@ class SalesController extends Controller {
         if ($stat=='topSalesThisMonth'){
             return $this->sale->topSalesThisMonth();
         }
+        if ($stat=='totalSalesByMonth'){
+            return $this->sale->totalSalesByMonth();
+        }
 
         $id = $request->getId("id");
         if ($id){

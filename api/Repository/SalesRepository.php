@@ -76,6 +76,13 @@ class SalesRepository extends EntityRepository {
         $answer = $requete->fetchAll(PDO::FETCH_OBJ);
         return $answer;
     }
+
+    public function totalSalesByMonth(){
+        $requete = $this->cnx->prepare("SELECT DATE_FORMAT(s.purchase_date, '%Y-%m') AS month, SUM(s.purchase_price) AS total_sales FROM Sales s WHERE s.purchase_date >= DATE_SUB(CURRENT_DATE, INTERVAL 6 MONTH) GROUP BY month ORDER BY month DESC;");
+        $requete->execute();
+        $answer = $requete->fetchAll(PDO::FETCH_OBJ);
+        return $answer;
+    }
     
     public function save($product){
         // Not implemented ! TODO when needed !          

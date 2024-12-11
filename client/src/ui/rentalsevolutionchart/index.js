@@ -4,33 +4,9 @@ import am5themes_Animated from "@amcharts/amcharts5/themes/Animated";
 
 // Function to aggregate sales by month over the past 6 months
 function aggregateMonthlyRentals(data) {
-  const monthlyRentals = {};
-  const currentDate = new Date();
-  const sixMonthsAgo = new Date();
-  sixMonthsAgo.setMonth(currentDate.getMonth() - 5); // 6 months ago
-
-  data.forEach((item) => {
-    const rentalDate = item.rental_date
-      ? new Date(item.rental_date.date)
-      : new Date(); // Parse rental date
-    const monthYear = `${rentalDate.getFullYear()}-${
-      rentalDate.getMonth() + 1
-    }`; // Format: YYYY-MM
-
-    // Only include data from the past 6 months
-    if (rentalDate >= sixMonthsAgo) {
-      if (monthlyRentals[monthYear]) {
-        monthlyRentals[monthYear] += item.rental_price; // Sum rentals for each month
-      } else {
-        monthlyRentals[monthYear] = item.rental_price; // Initialize sales if not present
-      }
-    }
-  });
-
-  return Object.entries(monthlyRentals).map(([key, value]) => ({
-    // Format and return the aggregated data
-    date: new Date(key).getTime(), // Convert date to timestamp
-    value: value, // Sales value
+  return data.map((item) => ({
+    date: new Date(item.month).getTime(), // Convert month to timestamp
+    value: parseFloat(item.total_rentals), // Convert total_rentals to float
   }));
 }
 
