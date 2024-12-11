@@ -9,6 +9,7 @@ import { RentalData } from "./data/rentals.js";
 import { MovieData } from "./data/movies.js";
 import { SalesEvolutionView } from "./ui/salesevolutionchart/index.js";
 import { RentalsEvolutionView } from "./ui/rentalsevolutionchart/index.js";
+import { SalesEvolutionGenreView } from "./ui/salesevolutiongenrechart/index.js";
 
 import "./index.css";
 
@@ -34,7 +35,9 @@ V.init = function () {
 V.render = function () {
   V.header.innerHTML = HeaderView.render();
 
-  /*
+  /*  
+  //Itération 2
+
   const chartData = [
     { category: "Category A", value: 40 },
     { category: "Category B", value: 30 },
@@ -51,9 +54,12 @@ V.render = function () {
   topMoviesRental();
   initializeSalesChart();
   initializeRentalsChart();
+  initializeSalesGenreChart()
 };
 
 C.init();
+
+//Itération 3
 
 async function updateSalesCounter() {
   try {
@@ -112,6 +118,8 @@ async function updateRentalsCounter() {
     V.rentalscounter.innerHTML = "Failed to load sales data"; 
   }
 }
+
+//Itération 4
 
 async function topMovies() {
   try {
@@ -267,6 +275,8 @@ async function topMoviesRental() {
   }
 }
 
+//Itération 5
+
 async function fetchSalesData() {
     const salesData = await SaleData.fetchAll();
     return salesData;
@@ -277,6 +287,10 @@ async function fetchRentalsData() {
   return rentalsData;
 }
 
+async function fetchMoviesData() {
+  const moviesData = await MovieData.fetchAll();
+  return moviesData;
+}
 
 async function initializeSalesChart() {
     const chartData = await fetchSalesData();
@@ -286,4 +300,12 @@ async function initializeSalesChart() {
 async function initializeRentalsChart() {
   const chartData = await fetchRentalsData();
   RentalsEvolutionView.render("rentalschartdiv", chartData); 
+}
+
+
+//Itération 6
+async function initializeSalesGenreChart() {
+  const chartData = await fetchSalesData();
+  const moviesData = await fetchMoviesData();
+  SalesEvolutionGenreView.render("saleschartgenrediv", chartData, moviesData); 
 }

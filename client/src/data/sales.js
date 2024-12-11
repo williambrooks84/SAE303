@@ -42,7 +42,7 @@ SaleData.update = async function (itemid) {
 };
 
 SaleData.fetch = async function (id) {
-    let data = await getRequest("saless/" + id);
+    let data = await getRequest("sales/" + id);
     return data === false ? [] : [data];
 };
 
