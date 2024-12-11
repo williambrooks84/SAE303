@@ -133,7 +133,8 @@ let RentalsEvolutionView = {
       chartData = aggregateMonthlyRentals(chartData); // Aggregate data by month
       chartData.sort((a, b) => a.date - b.date); // Sort data by date
       series.data.setAll(chartData); // Set the aggregated data
-      series.appear(1000); // Animate series appearance
+      series.appear(1000);
+
       chart.appear(1000, 100); // Animate chart appearance
     } else {
       console.warn("No rentals data available to render the chart."); // Warn if no data
