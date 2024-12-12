@@ -2,18 +2,18 @@ import * as am5 from "@amcharts/amcharts5";
 import * as am5xy from "@amcharts/amcharts5/xy";
 import am5themes_Animated from "@amcharts/amcharts5/themes/Animated";
 
-function aggregateMonthlySalesByMovie(salesData) {
+function aggregateMonthlyRentalsByMovie(rentalsData) {
   const result = [];
-  const movies = [...new Set(salesData.map((sale) => sale.movie))];
-  const months = [...new Set(salesData.map((sale) => sale.month))];
+  const movies = [...new Set(rentalsData.map((rental) => rental.movie))];
+  const months = [...new Set(rentalsData.map((rental) => rental.month))];
 
   months.forEach((month) => {
     movies.forEach((movie) => {
-      const sale = salesData.find((sale) => sale.month === month && sale.movie === movie);
+      const rental = rentalsData.find((rental) => rental.month === month && rental.movie === movie);
       result.push({
         date: new Date(`${month}-01`).getTime(),
         movie: movie,
-        total_sales_eur: sale ? parseFloat(sale.total_sales_eur) || 0 : 0,
+        total_rentals_eur: rental ? parseFloat(rental.total_rentals_eur) || 0 : 0,
       });
     });
   });
@@ -21,8 +21,8 @@ function aggregateMonthlySalesByMovie(salesData) {
   return result;
 }
 
-let SalesEvolutionByMovieView = {
-  render: function (containerId, salesData, moviesData) {
+let RentalsEvolutionByMovieView = {
+  render: function (containerId, rentalsData, moviesData) {
     am5.array.each(am5.registry.rootElements, function (root) {
       if (root.dom && root.dom.id && root.dom.id === containerId) {
         root.dispose();
@@ -63,7 +63,7 @@ let SalesEvolutionByMovieView = {
       })
     );
 
-    const aggregatedData = aggregateMonthlySalesByMovie(salesData, moviesData);
+    const aggregatedData = aggregateMonthlyRentalsByMovie(rentalsData, moviesData);
 
     aggregatedData.sort((a, b) => a.date - b.date);
 
@@ -74,7 +74,7 @@ let SalesEvolutionByMovieView = {
           name: genre,
           xAxis: xAxis,
           yAxis: yAxis,
-          valueYField: "total_sales_eur",
+          valueYField: "total_rentals_eur",
           valueXField: "date",
           tooltip: am5.Tooltip.new(root, {
             labelText: "{valueY}€",
@@ -118,7 +118,7 @@ let SalesEvolutionByMovieView = {
 
     root.container.children.push(
       am5.Label.new(root, {
-        text: "Evolution des ventes d'un film sur les 6 derniers mois (en €)",
+        text: "Evolution des locations d'un film sur les 6 derniers mois (en €)",
         x: 0,
         y: -10,
         fontSize: 16,
@@ -131,4 +131,4 @@ let SalesEvolutionByMovieView = {
   },
 };
 
-export { SalesEvolutionByMovieView };
+export { RentalsEvolutionByMovieView };

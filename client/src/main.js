@@ -14,6 +14,7 @@ import { RentalsEvolutionGenreView } from "./ui/rentalsevolutiongenrechart/index
 import { SalesByCountryView } from "./ui/salesbycountry/index.js";
 import { RentalsByCountryView } from "./ui/rentalsbycountry/index.js";
 import { SalesEvolutionByMovieView } from "./ui/salesevolutionmoviechart/index.js";
+import { RentalsEvolutionByMovieView } from "./ui/rentalsevolutionmoviechart/index.js";
 
 import "./index.css";
 
@@ -63,7 +64,6 @@ V.render = function () {
   initializeSalesByCountry();
   initializeRentalsByCountry();
   initializeMovies();
-  initializeSalesByMovie();
 };
 
 C.init();
@@ -174,26 +174,38 @@ async function fetchMovies(){
   return moviesData;
 }
 
-async function initializeMovies(){
+async function initializeMovies() {
   const moviesData = await fetchMovies();
   renderMovieList(moviesData);
+
+  const defaultSalesMovieId = document.getElementById("movieFilterSales").value;
+  const defaultRentalsMovieId = document.getElementById("movieFilterRentals").value;
+
+  initializeSalesByMovie(defaultSalesMovieId);
+  initializeRentalsByMovie(defaultRentalsMovieId);
 }
 
 function renderMovieList(moviesData) {
-  const movieFilter = document.getElementById("movieFilter");
-  movieFilter.innerHTML = ""; // Clear existing options
+  const movieFilterSales = document.getElementById("movieFilterSales");
+  const movieFilterRentals = document.getElementById("movieFilterRentals");
+  movieFilterSales.innerHTML = "";
+  movieFilterRentals.innerHTML = "";
 
   moviesData.forEach(movie => {
-    const option = document.createElement("option");
-    option.value = movie.id; // Set movie ID as the value
-    option.textContent = movie.movie_title; // Set the display text
-    movieFilter.appendChild(option);
+    const optionSales = document.createElement("option");
+    optionSales.value = movie.id;
+    optionSales.textContent = movie.movie_title;
+    movieFilterSales.appendChild(optionSales);
+
+    const optionRentals = document.createElement("option");
+    optionRentals.value = movie.id;
+    optionRentals.textContent = movie.movie_title;
+    movieFilterRentals.appendChild(optionRentals);
   });
 }
 
-//fonctionnel
 async function fetchSalesByMovieData(){
-  let idMovie = document.getElementById("movieFilter").value;
+  let idMovie = document.getElementById("movieFilterSales").value;
   console.log(idMovie);
   const salesData = await SaleData.fetchSalesByMovieID(idMovie);
   return salesData;
@@ -205,7 +217,25 @@ async function initializeSalesByMovie(idMovie) {
   SalesEvolutionByMovieView.render("salesbymoviediv", chartData);
 }
 
-document.getElementById("movieFilter").addEventListener("change", function() {
+async function fetchRentalsByMovieData(){
+  let idMovie = document.getElementById("movieFilterRentals").value;
+  console.log(idMovie);
+  const rentalsData = await RentalData.fetchRentalsByMovieID(idMovie);
+  return rentalsData;
+}
+
+async function initializeRentalsByMovie(idMovie) {
+  const chartData = await fetchRentalsByMovieData(idMovie);
+  console.log(chartData);
+  RentalsEvolutionByMovieView.render("rentalsbymoviediv", chartData);
+}
+
+document.getElementById("movieFilterSales").addEventListener("change", function() {
   const selectedMovieId = this.value;
   initializeSalesByMovie(selectedMovieId);
+});
+
+document.getElementById("movieFilterRentals").addEventListener("change", function() {
+  const selectedMovieId = this.value;
+  initializeRentalsByMovie(selectedMovieId);
 });

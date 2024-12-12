@@ -33,6 +33,10 @@ class RentalsController extends Controller {
         if ($stat=='rentalsByCountry'){
             return $this->rental->rentalsByCountry();
         }
+        if ($stat=='rentalsByMovie'){
+            $idMovie = $request->getParam("idMovie");
+            return $this->rental->rentalsByMovie($idMovie);
+        }
 
         $id = $request->getId("id");
         if ($id){

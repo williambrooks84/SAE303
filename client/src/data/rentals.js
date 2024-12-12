@@ -76,5 +76,10 @@ RentalData.fetchRentalsByCountry = async function(){
     return data;
 }
 
+RentalData.fetchRentalsByMovieID = async function(idMovie){
+    let data = await getRequest("rentals?stat=rentalsByMovie&idMovie="+idMovie);
+    return data;
+}
+
 
 export { RentalData };
