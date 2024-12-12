@@ -1,5 +1,4 @@
 import { HeaderView } from "./ui/header/index.js";
-import { PieView } from "./ui/pie/index.js";
 import { SalesCounterView } from "./ui/salescounter/index.js";
 import { RentalsCounterView } from "./ui/rentalscounter/index.js";
 import { TopPurchasesView } from "./ui/toppurchases/index.js";
@@ -28,7 +27,6 @@ C.init = async function () {
 
 let V = {
   header: document.querySelector("#header"),
-  //chart: document.querySelector("#chart"),
   salescounter: document.querySelector("#salescounter"),
   rentalscounter: document.querySelector("#rentalscounter"),
   toppurchases: document.querySelector("#toppurchases"),
@@ -42,19 +40,6 @@ V.init = function () {
 V.render = function () {
   V.header.innerHTML = HeaderView.render();
 
-  /*  
-  //Itération 2
-
-  const chartData = [
-    { category: "Category A", value: 40 },
-    { category: "Category B", value: 30 },
-    { category: "Category C", value: 20 },
-    { category: "Category D", value: 10 },
-  ];
-
-  // Render the chart
-  PieView.render("chart", chartData);
-  */
   updateSalesCounter();
   updateRentalsCounter();
   topMovies();
@@ -62,7 +47,7 @@ V.render = function () {
   initializeSalesChart();
   initializeRentalsChart();
   initializeSalesGenreChart();
-  initializeRetalsGenreChart();
+  initializeRentalsGenreChart();
   initializeSalesByCountry();
   initializeRentalsByCountry();
   initializeMovies();
@@ -143,7 +128,7 @@ async function fetchTotalRentalsByMonthAndGenreData(){
   return rentalsData;
 }
 
-async function initializeRetalsGenreChart(){
+async function initializeRentalsGenreChart(){
   const chartData = await fetchTotalRentalsByMonthAndGenreData();
   RentalsEvolutionGenreView.render("rentalschartgenrediv", chartData);
 }
@@ -207,8 +192,7 @@ function renderMovieList(moviesData) {
   });
 }
 
-async function fetchSalesByMovieData(){
-  let idMovie = document.getElementById("movieFilterSales").value;
+async function fetchSalesByMovieData(idMovie){
   const salesData = await SaleData.fetchSalesByMovieID(idMovie);
   return salesData;
 }
@@ -218,8 +202,7 @@ async function initializeSalesByMovie(idMovie) {
   SalesEvolutionByMovieView.render("salesbymoviediv", chartData);
 }
 
-async function fetchRentalsByMovieData(){
-  let idMovie = document.getElementById("movieFilterRentals").value;
+async function fetchRentalsByMovieData(idMovie){
   const rentalsData = await RentalData.fetchRentalsByMovieID(idMovie);
   return rentalsData;
 }
@@ -229,12 +212,12 @@ async function initializeRentalsByMovie(idMovie) {
   RentalsEvolutionByMovieView.render("rentalsbymoviediv", chartData);
 }
 
-document.getElementById("movieFilterSales").addEventListener("change", function() {
+document.getElementById("movieFilterSales").addEventListener("change", async function() {
   const selectedMovieId = this.value;
   initializeSalesByMovie(selectedMovieId);
 });
 
-document.getElementById("movieFilterRentals").addEventListener("change", function() {
+document.getElementById("movieFilterRentals").addEventListener("change", async function() {
   const selectedMovieId = this.value;
   initializeRentalsByMovie(selectedMovieId);
 });
@@ -248,7 +231,6 @@ async function fetchCustomers(){
 
 async function fetchMoviesByCustomerData(customerId){
   const moviesData = await CustomerData.fetchMoviesByCustomerID(customerId);
-  console.log(moviesData);
   return moviesData;
 }
 
@@ -278,10 +260,8 @@ document.getElementById("customerList").addEventListener("change", function() {
 });
 
 async function initializeMoviesByCustomer(customerId) {
-  console.log('Fetching movies for customer ID:', customerId);
   const moviesData = await fetchMoviesByCustomerData(customerId);
-  console.log("Movies data received:", moviesData); // Log to verify data
-  MoviesByCustomerView.render("moviesbycustomerdiv", moviesData); // Ensure this is correctly rendered
+  MoviesByCustomerView.render("moviesbycustomerdiv", moviesData); 
 }
 
 document.getElementById("customerList").addEventListener("change", function() {
