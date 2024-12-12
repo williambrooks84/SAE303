@@ -33,6 +33,10 @@ class SalesController extends Controller {
         if ($stat=='salesByCountry'){
             return $this->sale->salesByCountry();
         }
+        if ($stat=='salesByMovie'){
+            $idMovie = $request->getParam("idMovie");
+            return $this->sale->salesByMovie($idMovie);
+        }
 
         $id = $request->getId("id");
         if ($id){

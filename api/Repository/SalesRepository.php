@@ -97,6 +97,15 @@ class SalesRepository extends EntityRepository {
         $answer = $requete->fetchAll(PDO::FETCH_OBJ);
         return $answer;
     }
+
+    public function salesByMovie($idMovie){
+        $requete = $this->cnx->prepare("SELECT DATE_FORMAT(s.purchase_date, '%Y-%m') AS month, SUM(s.purchase_price) AS total_sales_eur FROM Sales s JOIN Movies m ON s.movie_id = m.id WHERE s.purchase_date >= DATE_SUB(NOW(), INTERVAL 6 MONTH) AND m.id = :idMovie GROUP BY DATE_FORMAT(s.purchase_date, '%Y-%m') ORDER BY DATE_FORMAT(s.purchase_date, '%Y-%m') ASC;");
+        $requete->bindParam(':idMovie', $idMovie);
+        $requete->execute();
+        $answer = $requete->fetchAll(PDO::FETCH_OBJ);
+        return $answer;
+    }
+
     
     public function save($product){
         // Not implemented ! TODO when needed !          

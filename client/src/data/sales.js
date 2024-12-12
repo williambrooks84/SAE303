@@ -76,4 +76,9 @@ SaleData.fetchSalesByCountry = async function(){
     return data;
 }
 
+SaleData.fetchSalesByMovieID = async function(idMovie){
+    let data = await getRequest("sales?stat=salesByMovie&idMovie="+idMovie);
+    return data;
+}
+
 export { SaleData };

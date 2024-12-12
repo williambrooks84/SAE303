@@ -13,6 +13,7 @@ import { SalesEvolutionGenreView } from "./ui/salesevolutiongenrechart/index.js"
 import { RentalsEvolutionGenreView } from "./ui/rentalsevolutiongenrechart/index.js";
 import { SalesByCountryView } from "./ui/salesbycountry/index.js";
 import { RentalsByCountryView } from "./ui/rentalsbycountry/index.js";
+import { SalesEvolutionByMovieView } from "./ui/salesevolutionmoviechart/index.js";
 
 import "./index.css";
 
@@ -60,7 +61,9 @@ V.render = function () {
   initializeSalesGenreChart();
   initializeRetalsGenreChart();
   initializeSalesByCountry();
-  initializeRentalsByCountry()
+  initializeRentalsByCountry();
+  initializeMovies();
+  initializeSalesByMovie();
 };
 
 C.init();
@@ -163,3 +166,46 @@ async function initializeRentalsByCountry(){
   const chartData = await fetchRentalsByCountryData();
   RentalsByCountryView.render("rentalsbycountrydiv", chartData);
 }
+
+//Itération 8
+
+async function fetchMovies(){
+  const moviesData = await MovieData.fetchAll();
+  return moviesData;
+}
+
+async function initializeMovies(){
+  const moviesData = await fetchMovies();
+  renderMovieList(moviesData);
+}
+
+function renderMovieList(moviesData) {
+  const movieFilter = document.getElementById("movieFilter");
+  movieFilter.innerHTML = ""; // Clear existing options
+
+  moviesData.forEach(movie => {
+    const option = document.createElement("option");
+    option.value = movie.id; // Set movie ID as the value
+    option.textContent = movie.movie_title; // Set the display text
+    movieFilter.appendChild(option);
+  });
+}
+
+//fonctionnel
+async function fetchSalesByMovieData(){
+  let idMovie = document.getElementById("movieFilter").value;
+  console.log(idMovie);
+  const salesData = await SaleData.fetchSalesByMovieID(idMovie);
+  return salesData;
+}
+
+async function initializeSalesByMovie(idMovie) {
+  const chartData = await fetchSalesByMovieData(idMovie);
+  console.log(chartData);
+  SalesEvolutionByMovieView.render("salesbymoviediv", chartData);
+}
+
+document.getElementById("movieFilter").addEventListener("change", function() {
+  const selectedMovieId = this.value;
+  initializeSalesByMovie(selectedMovieId);
+});
