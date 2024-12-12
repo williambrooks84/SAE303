@@ -26,7 +26,7 @@ let SalesEvolutionByMovieView = {
   render: function (containerId, salesData, moviesData) {
     // Dispose of existing root if it exists
     am5.array.each(am5.registry.rootElements, function (root) {
-      if (root.dom && root.dom.id === containerId) {
+      if (root.dom && root.dom.id && root.dom.id === containerId) {
         root.dispose(); // Dispose existing root
       }
     });
