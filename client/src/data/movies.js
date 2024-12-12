@@ -51,4 +51,9 @@ MovieData.fetchAll = async function () {
     return data;
 };
 
+MovieData.fetchGenres = async function(){
+    let data  = await getRequest("movies?type=getGenres");
+    return data;
+}
+
 export { MovieData };

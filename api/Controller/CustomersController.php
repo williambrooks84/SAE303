@@ -16,6 +16,12 @@ class CustomersController extends Controller {
 
    
     protected function processGetRequest(HttpRequest $request) {
+        $stat = $request->getParam("stat");
+        if ($stat=='moviesByCustomer'){
+            $idCustomer = $request->getParam("idCustomer");
+            return $this->customer->moviesByCustomerID($idCustomer);
+        }
+
         $id = $request->getId("id");
         if ($id){
             // URI is .../category/{id}

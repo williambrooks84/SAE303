@@ -4,6 +4,7 @@ import { SalesCounterView } from "./ui/salescounter/index.js";
 import { RentalsCounterView } from "./ui/rentalscounter/index.js";
 import { TopPurchasesView } from "./ui/toppurchases/index.js";
 import { TopRentalsView } from "./ui/toprentals/index.js";
+import { CustomerData } from "./data/customers.js";
 import { SaleData } from "./data/sales.js";
 import { RentalData } from "./data/rentals.js";
 import { MovieData } from "./data/movies.js";
@@ -15,6 +16,7 @@ import { SalesByCountryView } from "./ui/salesbycountry/index.js";
 import { RentalsByCountryView } from "./ui/rentalsbycountry/index.js";
 import { SalesEvolutionByMovieView } from "./ui/salesevolutionmoviechart/index.js";
 import { RentalsEvolutionByMovieView } from "./ui/rentalsevolutionmoviechart/index.js";
+import { MoviesByCustomerView } from "./ui/viewedbycustomer/index.js";
 
 import "./index.css";
 
@@ -64,6 +66,7 @@ V.render = function () {
   initializeSalesByCountry();
   initializeRentalsByCountry();
   initializeMovies();
+  initializeCustomers();
 };
 
 C.init();
@@ -206,27 +209,23 @@ function renderMovieList(moviesData) {
 
 async function fetchSalesByMovieData(){
   let idMovie = document.getElementById("movieFilterSales").value;
-  console.log(idMovie);
   const salesData = await SaleData.fetchSalesByMovieID(idMovie);
   return salesData;
 }
 
 async function initializeSalesByMovie(idMovie) {
   const chartData = await fetchSalesByMovieData(idMovie);
-  console.log(chartData);
   SalesEvolutionByMovieView.render("salesbymoviediv", chartData);
 }
 
 async function fetchRentalsByMovieData(){
   let idMovie = document.getElementById("movieFilterRentals").value;
-  console.log(idMovie);
   const rentalsData = await RentalData.fetchRentalsByMovieID(idMovie);
   return rentalsData;
 }
 
 async function initializeRentalsByMovie(idMovie) {
   const chartData = await fetchRentalsByMovieData(idMovie);
-  console.log(chartData);
   RentalsEvolutionByMovieView.render("rentalsbymoviediv", chartData);
 }
 
@@ -238,4 +237,54 @@ document.getElementById("movieFilterSales").addEventListener("change", function(
 document.getElementById("movieFilterRentals").addEventListener("change", function() {
   const selectedMovieId = this.value;
   initializeRentalsByMovie(selectedMovieId);
+});
+
+//Itération 9
+
+async function fetchCustomers(){
+  const customersData = await CustomerData.fetchAll();
+  return customersData;
+}
+
+async function fetchMoviesByCustomerData(customerId){
+  const moviesData = await CustomerData.fetchMoviesByCustomerID(customerId);
+  console.log(moviesData);
+  return moviesData;
+}
+
+async function initializeCustomers() {
+  const customersData = await fetchCustomers();
+  renderCustomerList(customersData);
+
+  const defaultCustomerId = document.getElementById("customerList").value;
+  initializeMoviesByCustomer(defaultCustomerId);
+}
+
+function renderCustomerList(customersData) {
+  const customerList = document.getElementById("customerList");
+  customerList.innerHTML = "";
+
+  customersData.forEach(customer => {
+    const option = document.createElement("option");
+    option.value = customer.id;
+    option.textContent = `${customer.firs_name} ${customer.last_name}`;
+    customerList.appendChild(option);
+  });
+}
+
+document.getElementById("customerList").addEventListener("change", function() {
+  const selectedCustomerId = this.value;
+  initializeMoviesByCustomer(selectedCustomerId);
+});
+
+async function initializeMoviesByCustomer(customerId) {
+  console.log('Fetching movies for customer ID:', customerId);
+  const moviesData = await fetchMoviesByCustomerData(customerId);
+  console.log("Movies data received:", moviesData); // Log to verify data
+  MoviesByCustomerView.render("moviesbycustomerdiv", moviesData); // Ensure this is correctly rendered
+}
+
+document.getElementById("customerList").addEventListener("change", function() {
+  const selectedCustomerId = this.value;
+  initializeMoviesByCustomer(selectedCustomerId);
 });

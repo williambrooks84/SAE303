@@ -65,6 +65,13 @@ class MoviesRepository extends EntityRepository {
         return $res;
     }
 
+    public function getGenres(){
+        $requete = $this->cnx->prepare("SELECT DISTINCT genre FROM Movies;");
+        $requete->execute();
+        $answer = $requete->fetchAll(PDO::FETCH_OBJ);
+        return $answer;
+    }
+
     public function save($product){
         // Not implemented ! TODO when needed !          
         return false;

@@ -69,6 +69,14 @@ class CustomersRepository extends EntityRepository {
         return $res;
     }
 
+    public function moviesByCustomerID($idCustomer){
+        $requete = $this->cnx->prepare("SELECT DISTINCT m.movie_title, m.genre FROM Customers c LEFT JOIN Sales s ON c.id = s.customer_id LEFT JOIN Rentals r ON c.id = r.customer_id AND s.movie_id != r.movie_id LEFT JOIN Movies m ON s.movie_id = m.id OR r.movie_id = m.id WHERE c.id = :idCustomer ORDER BY m.movie_title;");
+        $requete->bindParam(':idCustomer', $idCustomer);
+        $requete->execute();
+        $answer = $requete->fetchAll(PDO::FETCH_OBJ);
+        return $answer;
+    }
+
     public function save($product){
         // Not implemented ! TODO when needed !          
         return false;

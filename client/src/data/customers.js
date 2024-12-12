@@ -51,4 +51,9 @@ CustomerData.fetchAll = async function () {
     return data;
 };
 
+CustomerData.fetchMoviesByCustomerID = async function(idCustomer){
+    let data = await getRequest("customers?stat=moviesByCustomer&idCustomer=" + idCustomer);
+    return data;
+}
+
 export { CustomerData };

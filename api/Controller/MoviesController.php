@@ -16,6 +16,10 @@ class MoviesController extends Controller {
 
    
     protected function processGetRequest(HttpRequest $request) {
+        $type = $request->getParam("type");
+        if ($type=='getGenres'){
+            return $this->movie->getGenres();
+        }
 
         $id = $request->getId("id");
         if ($id){
