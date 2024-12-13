@@ -21,6 +21,11 @@ class MoviesController extends Controller {
             return $this->movie->getGenres();
         }
 
+        $stat = $request->getParam("stat");
+        if ($stat=='getDataConsumedByCountry'){
+            return $this->movie->getDataConsumedByCountry();
+        }
+
         $id = $request->getId("id");
         if ($id){
             // URI is .../category/{id}

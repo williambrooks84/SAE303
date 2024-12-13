@@ -16,6 +16,7 @@ import { RentalsByCountryView } from "./ui/rentalsbycountry/index.js";
 import { SalesEvolutionByMovieView } from "./ui/salesevolutionmoviechart/index.js";
 import { RentalsEvolutionByMovieView } from "./ui/rentalsevolutionmoviechart/index.js";
 import { MoviesByCustomerView } from "./ui/viewedbycustomer/index.js";
+import { DataConsumedByCountryView} from "./ui/dataconsumedbycountry/index.js";
 
 import "./index.css";
 
@@ -52,6 +53,7 @@ V.render = function () {
   initializeRentalsByCountry();
   initializeMovies();
   initializeCustomers();
+  initializeDataConsumedByCountry();
 };
 
 C.init();
@@ -270,3 +272,14 @@ document.getElementById("customerList").addEventListener("change", function() {
 });
 
 //Itération 11
+
+async function fetchDataConsumedByCountry(){
+  const MoviesData = MovieData.fetchDataConsumedByCountry();
+  return MoviesData;
+}
+
+async function initializeDataConsumedByCountry(){
+  const chartData = await fetchDataConsumedByCountry();
+  console.log(chartData); 
+  DataConsumedByCountryView.render("dataconsumedbycountrydiv", chartData);
+}

@@ -72,6 +72,13 @@ class MoviesRepository extends EntityRepository {
         return $answer;
     }
 
+    public function getDataConsumedByCountry(){
+        $requete = $this->cnx->prepare("WITH MovieData AS (SELECT id AS movie_id, duration_minutes / 60.0 * 2.7 AS data_consumption_gb FROM Movies), Transactions AS (SELECT customer_id, movie_id, DATE_FORMAT(rental_date, '%Y-%m') AS month, 'rental' AS transaction_type FROM Rentals WHERE rental_date >= DATE_SUB(CURDATE(), INTERVAL 12 MONTH) UNION ALL SELECT customer_id, movie_id, DATE_FORMAT(purchase_date, '%Y-%m') AS month, 'purchase' AS transaction_type FROM Sales WHERE purchase_date >= DATE_SUB(CURDATE(), INTERVAL 12 MONTH)), CustomerTransactions AS (SELECT t.customer_id, c.country, t.month, m.data_consumption_gb FROM Transactions t JOIN Customers c ON t.customer_id = c.id JOIN MovieData m ON t.movie_id = m.movie_id) SELECT country, month, ROUND(SUM(data_consumption_gb), 2) AS total_data_consumed_gb FROM CustomerTransactions GROUP BY country, month ORDER BY country, month;");
+        $requete->execute();
+        $answer = $requete->fetchAll(PDO::FETCH_OBJ);
+        return $answer;
+    }
+
     public function save($product){
         // Not implemented ! TODO when needed !          
         return false;

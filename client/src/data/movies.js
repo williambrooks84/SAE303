@@ -56,4 +56,9 @@ MovieData.fetchGenres = async function(){
     return data;
 }
 
+MovieData.fetchDataConsumedByCountry = async function(){
+    let data = await getRequest("movies?stat=getDataConsumedByCountry");
+    return data;
+}
+
 export { MovieData };
