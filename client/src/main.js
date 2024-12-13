@@ -268,3 +268,5 @@ document.getElementById("customerList").addEventListener("change", function() {
   const selectedCustomerId = this.value;
   initializeMoviesByCustomer(selectedCustomerId);
 });
+
+//Itération 11
