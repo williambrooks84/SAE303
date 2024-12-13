@@ -49,7 +49,7 @@ class CustomersRepository extends EntityRepository {
     }
 
     public function findAll(): array {
-        $requete = $this->cnx->prepare("select * from Customers");
+        $requete = $this->cnx->prepare("select * from Customers ORDER BY last_name;");
         $requete->execute();
         $answer = $requete->fetchAll(PDO::FETCH_OBJ);
 

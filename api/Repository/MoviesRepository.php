@@ -47,7 +47,7 @@ class MoviesRepository extends EntityRepository {
     }
 
     public function findAll(): array {
-        $requete = $this->cnx->prepare("SELECT * FROM Movies");
+        $requete = $this->cnx->prepare("SELECT * FROM Movies ORDER BY movie_title;");
         $requete->execute();
         $answer = $requete->fetchAll(PDO::FETCH_OBJ);  // Fetch all rows as an array of objects
     
