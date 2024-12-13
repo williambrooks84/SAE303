@@ -280,6 +280,5 @@ async function fetchDataConsumedByCountry(){
 
 async function initializeDataConsumedByCountry(){
   const chartData = await fetchDataConsumedByCountry();
-  console.log(chartData); 
   DataConsumedByCountryView.render("dataconsumedbycountrydiv", chartData);
 }

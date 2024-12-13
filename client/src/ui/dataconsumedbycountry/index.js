@@ -14,6 +14,7 @@ function aggregateMonthlyDataConsumption(data) {
   
             result.push({
                 date: new Date(`${month}-01`).getTime(),
+                month: month,
                 country: country,
                 total_data_consumed_gb: entry ? parseFloat(entry.total_data_consumed_gb) || 0 : 0,
             });
@@ -43,6 +44,9 @@ let DataConsumedByCountryView = {
 
         // Use the aggregated data
         const aggregatedData = aggregateMonthlyDataConsumption(data);
+
+        // Sort the aggregated data by date
+        aggregatedData.sort((a, b) => a.date - b.date);
 
         const chart = root.container.children.push(
             am5xy.XYChart.new(root, {
@@ -82,7 +86,7 @@ let DataConsumedByCountryView = {
         const xAxis = chart.xAxes.push(
             am5xy.CategoryAxis.new(root, {
                 renderer: xRenderer,
-                categoryField: "date",
+                categoryField: "month",
             })
         );
 
@@ -103,7 +107,7 @@ let DataConsumedByCountryView = {
                 clustered: false,
                 xAxis: xAxis,
                 yAxis: yAxis,
-                categoryXField: "date",
+                categoryXField: "month",
                 categoryYField: "country",
                 valueField: "total_data_consumed_gb",
             })
@@ -142,13 +146,13 @@ let DataConsumedByCountryView = {
         series.data.setAll(aggregatedData);
 
         const countries = [];
-        const dates = [];
+        const months = [];
         am5.array.each(aggregatedData, function (row) {
             if (countries.indexOf(row.country) === -1) {
                 countries.push(row.country);
             }
-            if (dates.indexOf(row.date) === -1) {
-                dates.push(row.date);
+            if (months.indexOf(row.month) === -1) {
+                months.push(row.month);
             }
         });
 
@@ -159,21 +163,22 @@ let DataConsumedByCountryView = {
         );
 
         xAxis.data.setAll(
-            dates.map(function (item) {
-                return { date: item };
+            months.map(function (item) {
+                return { month: item };
             })
         );
 
         chart.appear(1000, 100);
 
-        root.container.children.push(
+        root.container.children.unshift(
             am5.Label.new(root, {
-                text: "Data Consumed by Country",
-                x: 0,
-                y: -10,
-                fontSize: 16,
-                fontWeight: "bold",
-                fill: root.interfaceColors.get("text"),
+            text: "Data Consumed by Country",
+            x: am5.p50,
+            centerX: am5.p50,
+            y: -10, 
+            fontSize: 16,
+            fontWeight: "bold",
+            fill: root.interfaceColors.get("text"),
             })
         );
 
