@@ -7,9 +7,9 @@
     <title>Dashboard Statistiques de Ventes</title>
 </head>
 
-<body class="gap-10">
+<body class=" w-full flex flex-col justify-center gap-10">
     <section id="header" class="pb-10"></section>
-    <section class="counters flex flex-row p-8">
+    <section class="counters flex flex-col md:flex-row p-8 gap-5 md:gap-0">
         <div class="counters w-full flex flex-row gap-6">
             <div id="salescounter"></div>
             <div id="rentalscounter"></div>
@@ -20,22 +20,22 @@
         </div>
     </section>
 
-    <section class="compare-graphs gap-20 flex flex-row justify-center">
-        <div id="saleschartdiv" class="w-1/3 h-[300px]" ></div>
-        <div id="rentalschartdiv" class="w-1/3 h-[300px]" ></div>
+    <section class="compare-graphs gap-20 flex flex-col md:flex-row justify-center">
+        <div id="saleschartdiv" class="w-full md:w-1/3 h-[300px]" ></div>
+        <div id="rentalschartdiv" class="w-full md:w-1/3 h-[300px]" ></div>
     </section>
-        <section id="compare-graphs-genre" class="p-4 flex flex-row justify-center">
-            <div id="saleschartgenrediv" class="w-1/2 h-[400px]"></div>
-            <div id="rentalschartgenrediv" class="w-1/2 h-[400px]"></div>
+        <section id="compare-graphs-genre" class=" p-0 md:p-4 flex flex-col md:flex-row justify-center">
+            <div id="saleschartgenrediv" class="w-full md:w-1/2 h-[400px]"></div>
+            <div id="rentalschartgenrediv" class="w-full md:w-1/2 h-[400px]"></div>
         </section>
-        <section id="compare-graphs" class="p-4 flex flex-row pb-10">
-            <div id="salesbycountrydiv" class="w-1/4 h-[400px] mb-4"></div>
-            <div id="rentalsbycountrydiv" class="w-1/4 h-[400px] mb-4"></div>
-            <div class="movie-sales flex flex-col justify-center">
+        <section id="compare-graphs" class="p-4 flex flex-col md:flex-row pb-10">
+            <div id="salesbycountrydiv" class="w-full md:w-1/4 h-[400px] mb-4"></div>
+            <div id="rentalsbycountrydiv" class="w-full md:w-1/4 h-[400px] mb-4"></div>
+            <div class="movie-sales flex flex-col justify-center pb-10 md:pb-0">
                 <div id="salesbymoviediv" class="w-full h-[400px] mb-4 flex flex-col justify-center"></div>
                 <div>
                     <label for="movieFilterSales" class="text-lg">Selectionnez un film :</label>
-                    <select id="movieFilterSales" class="border border-black bg-gray-200">
+                    <select id="movieFilterSales" class="w-1/2 md:w-fit border border-black bg-gray-200">
                     </select>
                 </div>
             </div>    
@@ -43,7 +43,7 @@
                 <div id="rentalsbymoviediv" class="w-full h-[400px] mb-4 flex flex-col justify-center"></div>
                 <div>
                     <label for="movieFilterRentals" class="text-lg">Selectionnez un film :</label>
-                    <select id="movieFilterRentals" class="border border-black bg-gray-200">
+                    <select id="movieFilterRentals" class="w-1/2 md:w-fit border border-black bg-gray-200 ">
                     </select>
                 </div>
             </div>    
@@ -61,7 +61,7 @@
         </div>   
     </section>
     <section class="data-comsumed pb-10">
-        <div id="dataconsumedbycountrydiv" class="w-full h-[500px]"></div>
+        <div id="dataconsumedbycountrydiv" class="w-full h-[400px] md:h-[500px]"></div>
     </section>
     <script type="module" src="src/main.js"></script>
 </body>

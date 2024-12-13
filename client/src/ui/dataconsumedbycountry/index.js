@@ -172,7 +172,7 @@ let DataConsumedByCountryView = {
 
         root.container.children.unshift(
             am5.Label.new(root, {
-            text: "Data Consumed by Country",
+            text: "Données consommées par pays chaque mois (en Go)",
             x: am5.p50,
             centerX: am5.p50,
             y: -10, 
