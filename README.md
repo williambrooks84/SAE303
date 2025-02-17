@@ -14,17 +14,23 @@ Ce projet consiste en la création d'un **dashboard interactif** affichant les *
 
 ## Installation et Exécution  
 
-### 1. Installation des dépendances  
+### 1. Cloner le projet
 ```bash
-npm install
+git clone https://github.com/williambrooks84/SAE303.git
 ```
 
-### 2. Lancement du projet en local  
+### 2. Installation des dépendances  
+```bash
+npm install vite
+npm install tailwindcss
+```
+
+### 3. Lancement du projet en local  
 ```bash
 npm run dev
 ```
 
-### 3. Génération des fichiers pour hébergement  
+### 4. Génération des fichiers pour hébergement  
 ```bash
 npm run build
 ```
