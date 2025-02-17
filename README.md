@@ -10,7 +10,7 @@ Ce projet consiste en la création d'un **dashboard interactif** affichant les *
 - **HTML, CSS, JavaScript** : Base du développement frontend.  
 
 ### Backend  
-- **API en Node.js** : Fournit les informations sur les **clients, films et locations**.  
+- **API** : Fournit les informations sur les **clients, films et locations**.  
 
 ## Installation et Exécution  
 
